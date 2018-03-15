@@ -25,11 +25,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btnAddBook = (Button) findViewById(R.id.btn_add_book);
         Button btnDelBook = (Button) findViewById(R.id.btn_del_book);
         Button btnUpdBook = (Button) findViewById(R.id.btn_upd_book);
+        Button btnCallMethod = (Button) findViewById(R.id.btn_call_method);
 
         btnGetBook.setOnClickListener(this);
         btnAddBook.setOnClickListener(this);
         btnDelBook.setOnClickListener(this);
         btnUpdBook.setOnClickListener(this);
+        btnCallMethod.setOnClickListener(this);
 
         addBookProviderObserver();
     }
@@ -63,9 +65,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_upd_book:
                 updBook();
                 break;
+            case R.id.btn_call_method:
+                callMethod();
+                break;
             default:
                 break;
         }
+    }
+
+    private void callMethod() {
+        Uri bookUri = Uri.parse(bookProviderStr);
+        if (bookUri == null) {
+            return;
+        }
+
+        Bundle result = getContentResolver().call(bookUri, "getBookNum()", bookProviderStr, null);
+        if (result == null) {
+            return;
+        }
+        Log.e(TAG, "callMethod: bookNum = " + result.getInt("bookNum"));
     }
 
     private void updBook() {
