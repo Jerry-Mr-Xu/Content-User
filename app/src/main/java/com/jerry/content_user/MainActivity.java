@@ -1,8 +1,10 @@
 package com.jerry.content_user;
 
 import android.content.ContentValues;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +30,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnAddBook.setOnClickListener(this);
         btnDelBook.setOnClickListener(this);
         btnUpdBook.setOnClickListener(this);
+
+        addBookProviderObserver();
+    }
+
+    private void addBookProviderObserver() {
+        Uri bookUri = Uri.parse(bookProviderStr);
+        if (bookUri == null) {
+            return;
+        }
+        getContentResolver().registerContentObserver(bookUri, true, new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                Log.e(TAG, "onChange: Something changed");
+            }
+        });
     }
 
     @Override
